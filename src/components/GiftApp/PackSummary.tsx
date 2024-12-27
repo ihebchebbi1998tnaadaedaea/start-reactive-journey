@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '@/types/product';
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Package2, ShoppingBag, Gift } from 'lucide-react';
+import { Package2, ShoppingBag, Gift, PenLine } from 'lucide-react';
 
 interface PackSummaryProps {
   items: Product[];
@@ -26,12 +28,12 @@ const PackSummary = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Package2 className="w-5 h-5 text-[#6D0201]" />
-          <h2 className="text-lg font-medium text-gray-900">Résumé</h2>
+          <h2 className="text-lg font-medium text-gray-900">Résumé du Pack</h2>
         </div>
         <div className="flex items-center gap-2 bg-[#6D0201]/5 px-3 py-1.5 rounded-full">
           <Gift className="w-4 h-4 text-[#6D0201]" />
           <span className="text-sm font-medium text-[#6D0201]">
-            {items.length}
+            {items.length} article{items.length > 1 ? 's' : ''}
           </span>
         </div>
       </div>
@@ -65,7 +67,7 @@ const PackSummary = ({
         <Separator className="my-4" />
         
         <div className="flex justify-between items-center bg-[#6D0201]/5 p-4 rounded-lg">
-          <span className="text-sm font-medium text-gray-700">Total</span>
+          <span className="text-sm font-medium text-gray-700">Total du Pack</span>
           <motion.span 
             key={totalPrice}
             initial={{ scale: 1.2, color: '#6D0201' }}
@@ -74,6 +76,22 @@ const PackSummary = ({
           >
             {totalPrice.toFixed(2)} TND
           </motion.span>
+        </div>
+
+        <div className="space-y-2 mt-4">
+          <div className="flex items-center gap-2">
+            <PenLine className="w-4 h-4 text-[#6D0201]" />
+            <Label htmlFor="note" className="text-sm text-gray-700 font-medium">
+              Message Personnel
+            </Label>
+          </div>
+          <Textarea
+            id="note"
+            placeholder="Ajoutez votre message personnalisé ici..."
+            value={note}
+            onChange={(e) => onNoteChange(e.target.value)}
+            className="min-h-[100px] bg-white/80 backdrop-blur-sm border-gray-200 rounded-lg resize-none focus:ring-2 focus:ring-[#6D0201]/20 focus:border-[#6D0201] text-sm"
+          />
         </div>
       </div>
     </motion.div>

@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import SizeSelector from '../../product-detail/SizeSelector';
+import PersonalizationButton from '../../product-detail/PersonalizationButton';
 
 interface AddItemDialogProps {
   isOpen: boolean;
@@ -25,6 +26,8 @@ const AddItemDialog = ({
   product,
   selectedSize,
   onSizeSelect,
+  personalization,
+  onPersonalizationChange,
   onConfirm,
 }: AddItemDialogProps) => {
   if (!product) return null;
@@ -34,26 +37,20 @@ const AddItemDialog = ({
       <DialogContent className="sm:max-w-[500px] bg-white/95">
         <DialogHeader>
           <DialogTitle className="text-xl font-serif text-[#6D0201] mb-4">
-            Sélectionnez une taille
+            Personnalisez votre article
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
-          <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-            <img 
-              src={product.image} 
-              alt={product.name} 
-              className="w-20 h-20 object-contain bg-white rounded-md p-2"
-            />
-            <div>
-              <h3 className="font-medium text-gray-900">{product.name}</h3>
-              <p className="text-[#6D0201] font-medium">{product.price} TND</p>
-            </div>
-          </div>
-
           <SizeSelector
             selectedSize={selectedSize}
             sizes={['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL']}
             onSizeSelect={onSizeSelect}
+          />
+          
+          <PersonalizationButton
+            productId={product.id}
+            onSave={onPersonalizationChange}
+            initialText={personalization}
           />
 
           <button
