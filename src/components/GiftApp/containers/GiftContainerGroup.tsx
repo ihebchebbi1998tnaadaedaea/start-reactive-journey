@@ -26,7 +26,7 @@ const GiftContainerGroup = ({
           items={container1Items}
           maxItems={2}
           onDrop={onDrop(0)}
-          containerTitle="Pack Principal"
+          containerTitle="Pack Premium"
           className="h-full bg-white/95 backdrop-blur-sm shadow-xl rounded-xl border border-gray-100"
           onItemClick={onProductClick}
           onRemoveItem={(index) => onRemoveItem(index)}
@@ -38,7 +38,7 @@ const GiftContainerGroup = ({
           items={container2Items}
           maxItems={1}
           onDrop={onDrop(1)}
-          containerTitle="Pack Secondaire 1"
+          containerTitle="Pack Deluxe"
           className="h-full bg-white/95 backdrop-blur-sm shadow-xl rounded-xl border border-gray-100"
           onItemClick={onProductClick}
           onRemoveItem={(index) => onRemoveItem(index + 2)}
@@ -47,7 +47,7 @@ const GiftContainerGroup = ({
           items={container3Items}
           maxItems={1}
           onDrop={onDrop(2)}
-          containerTitle="Pack Secondaire 2"
+          containerTitle="Pack Élégance"
           className="h-full bg-white/95 backdrop-blur-sm shadow-xl rounded-xl border border-gray-100"
           onItemClick={onProductClick}
           onRemoveItem={(index) => onRemoveItem(index + 3)}
