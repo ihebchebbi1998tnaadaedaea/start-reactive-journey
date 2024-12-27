@@ -38,13 +38,15 @@ const GiftContainer = ({
           className="relative min-h-[200px]"
         >
           {/* Background placeholder */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-sm text-gray-500 pointer-events-none">
-            <MoveDown className="w-8 h-8 mb-2 text-gray-400" />
-            <span>Glissez un article ici</span>
-            <span className="text-xs text-gray-400 mt-1">
-              {maxItems - items.length} emplacement{maxItems - items.length > 1 ? 's' : ''} disponible{maxItems - items.length > 1 ? 's' : ''}
-            </span>
-          </div>
+          {items.length === 0 && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-sm text-gray-500 pointer-events-none">
+              <MoveDown className="w-8 h-8 mb-2 text-gray-400" />
+              <span>Glissez un article ici</span>
+              <span className="text-xs text-gray-400 mt-1">
+                {maxItems - items.length} emplacement{maxItems - items.length > 1 ? 's' : ''} disponible{maxItems - items.length > 1 ? 's' : ''}
+              </span>
+            </div>
+          )}
 
           {/* Grid of items */}
           <div className="grid grid-cols-1 gap-4 relative z-10">
@@ -57,21 +59,35 @@ const GiftContainer = ({
               >
                 <div
                   onClick={() => onItemClick?.(item)}
-                  className="bg-white/90 backdrop-blur-sm rounded-lg p-2 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow flex items-center gap-3"
+                  className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer overflow-hidden"
                 >
-                  <div className="w-16 h-16 rounded-md overflow-hidden bg-gray-50 flex-shrink-0">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-contain p-1"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">
-                      {item.name}
+                  <div className="flex items-start p-3 gap-4">
+                    <div className="w-20 h-20 rounded-md overflow-hidden bg-gray-50 flex-shrink-0">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-contain p-1 transition-transform duration-300 group-hover:scale-105"
+                      />
                     </div>
-                    <div className="text-sm text-[#6D0201]">
-                      {item.price} TND
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <h4 className="font-medium text-gray-900 line-clamp-1">
+                        {item.name}
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {item.size && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            {item.size}
+                          </span>
+                        )}
+                        {item.color && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            {item.color}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[#6D0201] font-medium">
+                        {item.price} TND
+                      </p>
                     </div>
                   </div>
                 </div>
