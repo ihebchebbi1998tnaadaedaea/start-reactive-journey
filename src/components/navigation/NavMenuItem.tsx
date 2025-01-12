@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   NavigationMenuItem,
   NavigationMenuTrigger,
@@ -10,18 +10,30 @@ interface NavMenuItemProps {
   title: string;
   image: string;
   children: React.ReactNode;
+  href?: string;
 }
 
-const NavMenuItem = ({ title, image, children }: NavMenuItemProps) => {
+const NavMenuItem = ({ title, image, children, href }: NavMenuItemProps) => {
+  const navigate = useNavigate();
   const isGiftUniverse = title === "L'univers Cadeaux";
+  
+  const handleClick = (e: React.MouseEvent) => {
+    if (href) {
+      e.preventDefault();
+      navigate(href);
+    }
+  };
   
   return (
     <NavigationMenuItem>
-      <NavigationMenuTrigger className="text-red text-[16px] lg:text-[21px] bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
+      <NavigationMenuTrigger 
+        onClick={handleClick}
+        className="text-red text-[16px] lg:text-[21px] bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent"
+      >
         {title}
       </NavigationMenuTrigger>
       <NavigationMenuContent>
-        <div className="w-screen max-w-screen-2xl mx-auto grid gap-0 px-6 py-2 md:grid-cols-[1fr_300px] bg-white h-[200px]">
+        <div className="w-screen max-w-screen-2xl mx-auto grid gap-0 px-6 py-2 md:grid-cols-[1fr_300px] bg-[#EFEDED] h-[200px] shadow-none">
           <div className="grid gap-2 overflow-y-auto">
             {React.Children.map(children, child => {
               if (isGiftUniverse) {

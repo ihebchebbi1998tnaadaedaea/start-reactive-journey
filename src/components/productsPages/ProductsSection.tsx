@@ -15,45 +15,62 @@ const normalizeString = (str: string): string => {
     .replace(/-/g, " ");
 };
 
-const ProductsSection = () => {
+interface ProductsSectionProps {
+  isFromFooter?: boolean;
+}
+
+const ProductsSection = ({ isFromFooter = false }: ProductsSectionProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const location = useLocation();
 
   const pathSegments = location.pathname
     .split('/')
-    .filter(segment => segment !== '' && segment !== 'category');
+    .filter(segment => segment !== '' && segment !== 'category' && segment !== 'footer-category');
 
   console.log("Path segments for filtering:", pathSegments);
 
   const { data: products, isLoading, error } = useQuery({
-    queryKey: ['products', ...pathSegments],
+    queryKey: ['products', ...pathSegments, isFromFooter],
     queryFn: fetchAllProducts,
     select: (data) => {
+      if (pathSegments[0] === 'univers-cadeaux') {
+        // For univers-cadeaux, return random items from gift universe
+        return data
+          .filter((product: Product) => 
+            normalizeString(product.type_product) === 'univers-cadeaux'
+          )
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 6);
+      }
+
       return data.filter((product: Product) => {
-        if (pathSegments.length >= 3) {
-          const [type, category, itemgroup] = pathSegments;
+        if (pathSegments.length >= 2) {
+          const [type, category] = pathSegments;
           
-          // Normalize all strings for comparison
           const normalizedType = normalizeString(type);
           const normalizedCategory = normalizeString(category);
-          const normalizedItemgroup = normalizeString(itemgroup);
-
           const productType = normalizeString(product.type_product);
           const productCategory = normalizeString(product.category_product);
-          const productItemgroup = normalizeString(product.itemgroup_product);
 
-          console.log("Filtering product:", {
-            type: { normalized: normalizedType, product: productType, match: normalizedType === productType },
-            category: { normalized: normalizedCategory, product: productCategory, match: normalizedCategory === productCategory },
-            itemgroup: { normalized: normalizedItemgroup, product: productItemgroup, match: normalizedItemgroup === productItemgroup }
-          });
+          // If accessing from footer, only filter by type and category
+          if (isFromFooter) {
+            return normalizedType === productType && 
+                   (category ? normalizedCategory === productCategory : true);
+          }
 
-          return (
-            normalizedType === productType &&
-            normalizedCategory === productCategory &&
-            normalizedItemgroup === productItemgroup
-          );
+          // Regular filtering including itemgroup
+          const itemgroup = pathSegments[2];
+          if (itemgroup) {
+            const normalizedItemgroup = normalizeString(itemgroup);
+            const productItemgroup = normalizeString(product.itemgroup_product);
+            return normalizedType === productType && 
+                   normalizedCategory === productCategory && 
+                   normalizedItemgroup === productItemgroup;
+          }
+
+          return normalizedType === productType && 
+                 normalizedCategory === productCategory;
         }
         return true;
       });
@@ -87,9 +104,9 @@ const ProductsSection = () => {
 
   return (
     <div className="w-full bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className={`container mx-auto px-4 ${isFromFooter ? 'py-12' : 'py-8'}`}>
         {isLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="w-full">
                 <Skeleton className="h-[400px] w-full rounded-lg" />
@@ -100,7 +117,7 @@ const ProductsSection = () => {
           <NoProductsFound />
         ) : (
           <>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               {currentProducts.map((product) => (
                 <div key={product.id} className="w-full">
                   <ProductCard product={product} />
@@ -108,14 +125,14 @@ const ProductsSection = () => {
               ))}
             </div>
             {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-6">
+              <div className="flex justify-center items-center mt-12">
                 {Array.from({ length: totalPages }).map((_, index) => (
                   <button
                     key={index}
-                    className={`mx-1 px-3 py-1 rounded-md ${
+                    className={`mx-2 px-4 py-2 rounded-md transition-all duration-300 ${
                       currentPage === index + 1
                         ? "bg-[#471818] text-white"
-                        : "bg-gray-200 text-gray-700"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                     }`}
                     onClick={() => setCurrentPage(index + 1)}
                   >

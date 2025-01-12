@@ -5,20 +5,22 @@ interface SizeSelectorProps {
   selectedSize: string;
   sizes: string[];
   onSizeSelect: (size: string) => void;
+  isCostume?: boolean;
 }
 
-const SizeSelector = ({ selectedSize, sizes, onSizeSelect }: SizeSelectorProps) => {
+const SizeSelector = ({ selectedSize, sizes, onSizeSelect, isCostume = false }: SizeSelectorProps) => {
+  const displaySize = (size: string) => {
+    if (isCostume) {
+      return size;
+    }
+    if (size === '3XL') return '3XL';
+    return size;
+  };
+
   return (
     <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-900">
-          Taille {selectedSize ? `sélectionnée: ${selectedSize}` : ''}
-        </span>
-        <button className="text-xs text-[#700100] hover:underline">
-          Guide des tailles
-        </button>
-      </div>
-      <div className="grid grid-cols-7 gap-1">
+      
+      <div className="grid grid-cols-6 gap-1">
         {sizes.map((size) => (
           <button
             key={size}
@@ -30,7 +32,7 @@ const SizeSelector = ({ selectedSize, sizes, onSizeSelect }: SizeSelectorProps) 
                 : 'bg-white border border-gray-200 text-gray-900 hover:border-[#700100] hover:bg-gray-50'
             )}
           >
-            {size}
+            {displaySize(size)}
           </button>
         ))}
       </div>

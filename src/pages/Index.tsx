@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Suspense, useTransition } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from "@/components/ui/skeleton";
+import MainNavbarIndex from '@/components/MainNavbarIndex';
 
 const TopNavbar = React.lazy(() => import('../components/TopNavbar'));
 const BrandNavbar = React.lazy(() => import('../components/BrandNavbar'));
@@ -74,7 +75,7 @@ const Index = () => {
               <TopNavbar />
               <BrandNavbar />
               <div className="hidden lg:block">
-                <MainNavbar />
+                <MainNavbarIndex />
               </div>
               
               <Hero />

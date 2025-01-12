@@ -5,6 +5,7 @@ import { CheckCircle } from 'lucide-react';
 import { useCart } from '@/components/cart/CartProvider';
 import { updateProductStock } from '@/utils/stockManagement';
 import { submitOrder } from '@/services/orderSubmissionApi';
+import { toast } from "@/hooks/use-toast";
 
 const PaymentSuccessPage = () => {
   const navigate = useNavigate();
@@ -16,19 +17,16 @@ const PaymentSuccessPage = () => {
   useEffect(() => {
     const handlePaymentSuccess = async () => {
       try {
-        // Get pending order from sessionStorage
         const pendingOrderString = sessionStorage.getItem('pendingOrder');
         if (pendingOrderString) {
           const pendingOrder = JSON.parse(pendingOrderString);
           console.log('Processing pending order:', pendingOrder);
           
-          // Update stock
           await updateProductStock(pendingOrder.cartItems);
 
-          // Get user details from sessionStorage
           const userDetails = JSON.parse(sessionStorage.getItem('userDetails') || '{}');
+          const packType = sessionStorage.getItem('selectedPackType') || 'aucun';
 
-          // Format items with personalization
           const formattedItems = pendingOrder.cartItems.map((item: any) => ({
             id: item.id,
             name: item.personalization 
@@ -39,10 +37,11 @@ const PaymentSuccessPage = () => {
             image: item.image,
             size: item.size || '-',
             color: item.color || '-',
-            personalization: item.personalization || '-'
+            personalization: item.personalization || '-',
+            pack: packType,
+            box: item.withBox ? 'Avec box' : 'Sans box'
           }));
 
-          // Prepare order submission data
           const orderData = {
             order_id: pendingOrder.orderId,
             user_details: {
@@ -75,17 +74,30 @@ const PaymentSuccessPage = () => {
             }
           };
 
-          // Submit order
           await submitOrder(orderData);
           
-          // Clear pending order
+          toast({
+            title: "Commande confirmée !",
+            description: "Un email de confirmation vous a été envoyé.",
+            style: {
+              backgroundColor: '#700100',
+              color: 'white',
+              border: '1px solid #590000',
+            },
+          });
+          
           sessionStorage.removeItem('pendingOrder');
+          sessionStorage.removeItem('selectedPackType');
         }
 
-        // Clear the cart
         clearCart();
       } catch (error) {
         console.error('Error processing payment success:', error);
+        toast({
+          title: "Erreur",
+          description: "Une erreur est survenue lors du traitement de votre commande. Notre équipe a été notifiée.",
+          variant: "destructive",
+        });
       }
     };
 
@@ -117,6 +129,7 @@ const PaymentSuccessPage = () => {
         </h1>
         <p className="text-gray-600 mb-6">
           Votre commande a été confirmée et sera traitée dans les plus brefs délais.
+          Un email de confirmation vous a été envoyé.
         </p>
         <motion.button
           whileHover={{ scale: 1.05 }}

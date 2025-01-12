@@ -31,9 +31,13 @@ const OrderSummary = ({
 }: OrderSummaryProps) => {
   const [discountCode, setDiscountCode] = useState('');
   const { calculateTotal, hasNewsletterDiscount } = useCart();
-  const { subtotal, discount: newsletterDiscount, total } = calculateTotal();
-  const shipping = subtotal > 500 ? 0 : 7;
+  const { subtotal, discount: newsletterDiscount, total, boxTotal } = calculateTotal();
+  
+  const shipping = subtotal > 299 ? 0 : 8;
   const finalTotal = total + shipping;
+
+  // Check if any item has personalization
+  const hasPersonalization = cartItems.some(item => item.personalization);
 
   const handleApplyDiscount = () => {
     const promoCode = promoCodes[discountCode];
@@ -105,6 +109,13 @@ const OrderSummary = ({
             <span>{subtotal.toFixed(2)} TND</span>
           </div>
           
+          {boxTotal > 0 && (
+            <div className="flex justify-between text-[#8E9196]">
+              <span>Box cadeau</span>
+              <span>{boxTotal.toFixed(2)} TND</span>
+            </div>
+          )}
+          
           {hasNewsletterDiscount && newsletterDiscount > 0 && (
             <div className="flex justify-between text-green-600">
               <span>Réduction newsletter (-5%)</span>
@@ -117,7 +128,6 @@ const OrderSummary = ({
             <span>{shipping === 0 ? 'Gratuite' : `${shipping.toFixed(2)} TND`}</span>
           </div>
           
-          {/* Discount Code Section */}
           <div className="space-y-2 pt-2 border-t border-gray-100">
             <div className="flex gap-2">
               <Input
@@ -151,11 +161,12 @@ const OrderSummary = ({
           total={subtotal}
           shipping={shipping}
           finalTotal={finalTotal}
+          hasPersonalization={hasPersonalization}
         />
 
         <div className="mt-6 space-y-2 text-sm text-[#8E9196]">
           <p className="flex items-center gap-2 hover:text-[#1A1F2C] transition-colors">
-            • Livraison gratuite à partir de 500 TND
+            • Livraison gratuite à partir de 299 TND
           </p>
           <p className="flex items-center gap-2 hover:text-[#1A1F2C] transition-colors">
             • Retours gratuits sous 14 jours

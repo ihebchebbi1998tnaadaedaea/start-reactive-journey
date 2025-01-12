@@ -1,39 +1,37 @@
 import React from 'react';
-import { Product } from '@/types/product';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Product } from '@/types/product';
 import SizeSelector from '../../product-detail/SizeSelector';
 import PersonalizationButton from '../../product-detail/PersonalizationButton';
 
 interface AddItemDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  product: Product | null;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  droppedItem: Product | null;
   selectedSize: string;
-  onSizeSelect: (size: string) => void;
   personalization: string;
+  onSizeSelect: (size: string) => void;
   onPersonalizationChange: (text: string) => void;
   onConfirm: () => void;
 }
 
 const AddItemDialog = ({
-  isOpen,
-  onClose,
-  product,
+  open,
+  onOpenChange,
+  droppedItem,
   selectedSize,
-  onSizeSelect,
   personalization,
+  onSizeSelect,
   onPersonalizationChange,
   onConfirm,
 }: AddItemDialogProps) => {
-  if (!product) return null;
-
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] bg-white/95">
         <DialogHeader>
           <DialogTitle className="text-xl font-serif text-[#6D0201] mb-4">
@@ -48,7 +46,7 @@ const AddItemDialog = ({
           />
           
           <PersonalizationButton
-            productId={product.id}
+            productId={droppedItem?.id || 0}
             onSave={onPersonalizationChange}
             initialText={personalization}
           />

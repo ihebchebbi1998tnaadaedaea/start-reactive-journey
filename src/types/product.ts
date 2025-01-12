@@ -15,12 +15,18 @@ export interface Product {
   relatedProducts: string;
   colorProduct: string;
   sizes: {
-    xs: number;
     s: number;
     m: number;
     l: number;
     xl: number;
     xxl: number;
+    "3xl": number;
+    "48": number;
+    "50": number;
+    "52": number;
+    "54": number;
+    "56": number;
+    "58": number;
   };
   quantity: number;
   type_product: string;
